@@ -175,24 +175,11 @@ Password: admin1234
 
 Если Django предупредит о простом пароле, можно подтвердить создание пользователя.
 
-### 6. Получение JWT-токена
+## Быстрая проверка сценария котоблога
 
-Endpoint:
+Перед проверкой нужно запустить проект через Docker и создать суперпользователя.
 
-```http
-POST /auth/jwt/create/
-```
-
-Тело запроса:
-
-```json
-{
-  "username": "admin",
-  "password": "admin1234"
-}
-```
-
-Пример через PowerShell:
+### 1. Получить JWT-токен
 
 ```powershell
 $body = @{
@@ -205,15 +192,7 @@ $response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/auth/jwt/create/" -Met
 $token = $response.access
 ```
 
-Для защищенных запросов используется заголовок:
-
-```http
-Authorization: Bearer <access_token>
-```
-
-## Проверка API
-
-### Создание котика
+### 2. Создать котика
 
 ```powershell
 $cat = @{
@@ -230,120 +209,51 @@ $cat = @{
 Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/cats/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $cat
 ```
 
-Проверить список котиков:
-
-```text
-http://127.0.0.1:8000/api/cats/
-```
-
-### Создание поста котоблога
-
-Если котик имеет `id = 1`:
+### 3. Создать пост
 
 ```powershell
 $post = @{
     cat = 1
-    title = "Barsik docker blog story"
-    text = "This post was created inside Docker with PostgreSQL, Gunicorn and Nginx."
+    title = "Barsik demo post"
+    text = "This is a demo blog post about Barsik for course project presentation."
     is_published = $true
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/blog/posts/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $post
 ```
 
-Проверить список постов:
+### 4. Получить список постов
 
 ```text
 http://127.0.0.1:8000/api/blog/posts/
 ```
 
-### Добавление комментария
-
-Если пост имеет `id = 1`:
-
-```powershell
-$comment = @{
-    text = "Docker comment for Barsik blog post."
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/blog/posts/1/comments/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $comment
-```
-
-Проверить детальную страницу поста:
+### 5. Открыть детальную страницу поста
 
 ```text
 http://127.0.0.1:8000/api/blog/posts/1/
 ```
 
-### Создание сезона
+### 6. Добавить комментарий
 
 ```powershell
-$season = @{
-    title = "Spring Kitty Season"
-    description = "Season event for active Kittygram users."
-    start_date = "2026-05-01"
-    end_date = "2026-05-31"
+$comment = @{
+    text = "Demo comment for Barsik post."
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/seasons/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $season
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/blog/posts/1/comments/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $comment
 ```
 
-Проверить список сезонов:
-
-```text
-http://127.0.0.1:8000/api/seasons/
-```
-
-### Активация сезона
-
-Если сезон имеет `id = 1`:
+### 7. Выполнить moderate
 
 ```powershell
-Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/seasons/1/activate/" -Method POST -Headers @{Authorization = "Bearer $token"}
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/blog/comments/1/moderate/" -Method POST -Headers @{Authorization = "Bearer $token"}
 ```
 
-### Начисление очков пользователю
-
-Если пользователь имеет `id = 1`:
+### 8. Выполнить toggle_publish
 
 ```powershell
-$points = @{
-    user = 1
-    points = 25
-    action = "Published cat activity during season"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/seasons/1/add_points/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $points
-```
-
-### Таблица лидеров
-
-```text
-http://127.0.0.1:8000/api/seasons/1/leaderboard/
-```
-
-### Проверка ошибки валидации
-
-Нельзя начислить больше 100 очков за одно действие:
-
-```powershell
-$badPoints = @{
-    user = 1
-    points = 150
-    action = "Too many points"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/seasons/1/add_points/" -Method POST -ContentType "application/json" -Headers @{Authorization = "Bearer $token"} -Body $badPoints
-```
-
-Ожидаемый ответ:
-
-```json
-{
-  "points": [
-    "Ensure this value is less than or equal to 100."
-  ]
-}
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/blog/posts/1/toggle_publish/" -Method POST -Headers @{Authorization = "Bearer $token"}
 ```
 
 ## Документация API
