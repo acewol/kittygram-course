@@ -1,0 +1,307 @@
+{
+  "info": {
+    "name": "Kittygram Kotoblog Course API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Набор проверочных запросов для курсовой работы по Kittygram: котоблог, посты и комментарии."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "cat_id",
+      "value": "1"
+    },
+    {
+      "key": "post_id",
+      "value": "1"
+    },
+    {
+      "key": "comment_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Получить JWT-токен",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/auth/jwt/create/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "jwt",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin1234\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Список котиков",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/cats/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "cats"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Создать пост котоблога",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cat\": 1,\n  \"title\": \"Barsik course story\",\n  \"text\": \"Barsik slept on the laptop and became the main hero of the course project.\",\n  \"is_published\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Список постов",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Детальная страница поста",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/{{post_id}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts",
+            "{{post_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Добавить комментарий к посту",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/{{post_id}}/comments/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts",
+            "{{post_id}}",
+            "comments"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Good course project story about Barsik.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Список комментариев поста",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/{{post_id}}/comments/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts",
+            "{{post_id}}",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Модерировать комментарий",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/blog/comments/{{comment_id}}/moderate/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "comments",
+            "{{comment_id}}",
+            "moderate"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Скрыть/показать пост",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/{{post_id}}/toggle_publish/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts",
+            "{{post_id}}",
+            "toggle_publish"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ошибка валидации: короткий пост",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/blog/posts/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "blog",
+            "posts"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cat\": 1,\n  \"title\": \"Bad\",\n  \"text\": \"Too short\",\n  \"is_published\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ]
+}
